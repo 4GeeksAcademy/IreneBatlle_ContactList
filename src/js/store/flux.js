@@ -1,43 +1,108 @@
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
-			demo: [
-				{
-					title: "FIRST",
-					background: "white",
-					initial: "white"
-				},
-				{
-					title: "SECOND",
-					background: "white",
-					initial: "white"
-				}
-			]
+			listContacts: [] //esto srive para crear datos a partir de la API
 		},
 		actions: {
-			// Use getActions to call a function within a fuction
-			exampleFunction: () => {
-				getActions().changeColor(0, "green");
+			// crear usuario
+            createUser: () => {
+                fetch("https://playground.4geeks.com/contact/agendas/irene_batlle/", {
+                    method: "POST",
+
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        console.log(data);
+
+                    })
+                    .catch((error) => console.log(error));
 			},
-			loadSomeData: () => {
-				/**
-					fetch().then().then(data => setStore({ "foo": data.bar }))
-				*/
-			},
-			changeColor: (index, color) => {
-				//get the store
+
+			getInfoContacts: () => {//recibir la información de los contactos
+				fetch("https://playground.4geeks.com/contact/agendas/irene_batlle/contacts", {
+					method: "GET"})
+					.then ((response)=>{
+					if (response.status==404){
+						getActions().createUser()
+					}
+					if(response.ok){
+						return response.json()
+					}
+					})
+                    .then((data) => {
+                        if (data) {
+                            setStore({ listContacts: data.contacts })
+                        }
+                    }) // store is an object, and I want to target the contacts state and assign it the value of data.contacts
+                    .catch((error => console.log(error)))
+            },
+
+			addContactToList: (contact) =>{
 				const store = getStore();
+				setStore({...store, listContacts:[...store.listContacts, contact]})
+			}, 
 
-				//we have to loop the entire demo array to look for the respective index
-				//and change its color
-				const demo = store.demo.map((elm, i) => {
-					if (i === index) elm.background = color;
-					return elm;
-				});
+			createContact: (payload) =>{
+				fetch ("https://playground.4geeks.com/contact/agendas/irene_batlle/contacts", {
+					method: "POST", 
+					headers:{
+						'Content-Type':'application/json'
+					}, 
+					body: JSON.stringify(
+						payload
+					),
+				})
+				.then((response)=>response.json())
+				.then((data)=>{
+					console.log(data);
+					const actions = getActions();
+					actions.addContactToList(data);
+					console.log("Contacto añadido", data);
+				})
+				.catch((error)=>console.log(error));
+			}, 
+			
+			deleteCOntact: (id)=>{
+				fetch(`https://playground.4geeks.com/contact/agendas/irene_batlle/contacts/${id}`, {
+					method: "DELETE",
+				})
+				.then((response)=>{
+					console.log(response)
+					if(response.ok){
+						const store = getStore();
+						const updatedContacts=store.listContacts.filter(contact=>contact.id!==id);
+						setStore({listContacts: updatedContacts});
+						console.log(`El contacto ${id} se ha eliminado`);
+					}else{
+						console.log(`El contacto ${id} no se ha podido eliminar`)
+					}
+				})
+				.catch((error)=>console.log(error));
+			},
 
-				//reset the global store
-				setStore({ demo: demo });
+			editContact: (id, contact)=>{
+				const store = getStore()
+				fetch(`https://playground.4geeks.com/contact/agendas/irene_batlle/contacts/${id}`,{
+					method:"PUT", 
+					headers:{
+						'Content-type': 'application/json'
+					}, 
+					body: JSON.stringify(contact)
+				})
+				.then((response)=>{
+					if (data){
+						const updatedList =store.listContacts.map(contact=>{
+							if (contact.id==id){
+								contact = data
+							}
+							return contact
+						})
+						setStore({listContacts: updatedList})
+					}
+				})
+				.catch((error)=>console.log(error));
 			}
+
 		}
 	};
 };

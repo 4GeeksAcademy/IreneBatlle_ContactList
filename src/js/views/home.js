@@ -1,15 +1,14 @@
 import React from "react";
-import rigoImage from "../../img/rigo-baby.jpg";
+import {Link} from "react-router-dom";
+import { useContext } from "react";
+
 import "../../styles/home.css";
 
-export const Home = () => (
+export const Home = () => {
+	return(
 	<div className="text-center mt-5">
-		<h1>Hello Rigo!</h1>
-		<p>
-			<img src={rigoImage} />
-		</p>
-		<a href="#" className="btn btn-success">
-			If you see this green button, bootstrap is working
-		</a>
+		<h1>Agenda de contactos</h1>
+
 	</div>
-);
+	)
+};
