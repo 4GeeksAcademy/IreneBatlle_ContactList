@@ -17,8 +17,9 @@ const Contacts = () => {
 
 <div className="mx-auto text-center">
     <div className="d-flex flex-column align-items-center">
-        <Link to="/AddContact">
-        <button className="btn mt-3 custom-border">Añadir contacto</button>
+        <Link to="/crearContacto">
+        <button className="btn btn-light custom-border mt-3">Añadir contacto</button>
+
         </Link>
     </div>
     <ul className="list-group mt-3">

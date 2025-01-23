@@ -27,14 +27,10 @@ const Layout = () => {
 					<Route path="/crearContacto" element={<AddContact />} />
 					<Route path="/editarContacto/:id" element={<AddContact />} />
 					<Route
-    				path="*"
-    				element={<div className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
-            			<h1 className="text-center">Ups! No se ha podido encontrar la página!</h1>
-        			</div>
-    }
-/>
-
-
+						path="*"
+						element={<div className="page-not-found">
+								<h1>Ups! No se ha podido encontrar la página!</h1>
+								</div>}/>
 				</Routes>
 			</BrowserRouter>
 		</div>
