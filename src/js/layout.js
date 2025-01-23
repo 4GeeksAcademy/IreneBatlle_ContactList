@@ -1,12 +1,15 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import "../styles/index.css";
+
 
 
 // import Home from "./views/Home.jsx";
-import Contacts from "./views/Contacts.jsx";
-import AddContact from "./views/AddContact.jsx";
+import Contacts from "./views/Contacts.js";
+import AddContact from "./views/AddContact.js";
 import injectContext from "./store/appContext";
-import EditContact from "./views/EditContact.jsx";
+import { Navbar } from "./component/navbar.js";
+
 
 //create your first component
 const Layout = () => {
@@ -17,12 +20,20 @@ const Layout = () => {
 	return (
 		<div>
 			<BrowserRouter basename={basename}>
+				<Navbar/>
 				<Routes>
 					{/* <Route path="/" element={<Home />} /> */}
 					<Route path="/" element={<Contacts />} />
-					<Route path="/addContact" element={<AddContact />} />
-					<Route path="/editContact/:id" element={<AddContact />} />
-					<Route path="*" element={<h1>Not found!</h1>} />
+					<Route path="/crearContacto" element={<AddContact />} />
+					<Route path="/editarContacto/:id" element={<AddContact />} />
+					<Route
+    				path="*"
+    				element={<div className="d-flex justify-content-center align-items-center" style={{ height: "100vh" }}>
+            			<h1 className="text-center">Ups! No se ha podido encontrar la página!</h1>
+        			</div>
+    }
+/>
+
 
 				</Routes>
 			</BrowserRouter>

@@ -1,3 +1,39 @@
-/* 
-    General Styles
-*/
+/* Navbar personalizado */
+.custom-navbar {
+    height: 200px;
+    background-image: url('https://img.freepik.com/fotos-premium/fondo-textura-papel-forrado-cuaderno_35652-821.jpg'); 
+    background-size: cover;
+    background-attachment: fixed; 
+    background-position: center;
+    background-repeat: no-repeat; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Opcional: Ajusta el texto dentro del Navbar */
+.custom-navbar h1 {
+    font-size: 5rem; /* Tamaño del texto */
+    font-weight: bold;
+    color: rgba(83, 83, 83, 0.719); /* Color del texto */
+    margin: 0;
+    font-family: 'Patrick Hand SC', cursive;
+}
+
+
+
+.btn-light.custom-border {
+    border: 2px solid #999999; /* Borde blanco de 2px */
+    border-radius: 12px; /* Bordes redondeados */
+    padding: 10px 20px; /* Espaciado dentro del botón */
+
+    color: rgb(0, 0, 0); /* Color del texto */
+    font-weight: bold; /* Texto en negrita */
+    transition: all 0.3s ease; /* Transición suave al pasar el ratón */
+}
+
+/* Efecto al pasar el ratón sobre el botón */
+.btn-light.custom-border:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Fondo con opacidad */
+    border-color: #2c2c2c; /* Cambia el color del borde al pasar el ratón */
+}
