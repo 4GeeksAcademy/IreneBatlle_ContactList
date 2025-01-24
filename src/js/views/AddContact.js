@@ -13,6 +13,9 @@ const AddContact = () => {
     const [phone, setPhone] = useState("");
     const [email, setEmail] = useState("");
     const [address, setAddress] = useState("");
+    const [contact, setContact] = useState({});
+
+    
 
     function saveContact(e) {
         e.preventDefault()
@@ -31,7 +34,7 @@ const AddContact = () => {
         } else {
             actions.editContact(id, payload)
         }
-        alert("Se grabo los datos del contacto");
+        alert("El guardaron los datos del contacto");
         navigate("/");
         setName("");
         setPhone("");

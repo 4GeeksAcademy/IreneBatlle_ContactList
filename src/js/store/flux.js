@@ -1,3 +1,5 @@
+
+
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
@@ -5,103 +7,141 @@ const getState = ({ getStore, getActions, setStore }) => {
 		},
 		actions: {
 			// crear usuario
-            createUser: () => {
-                fetch("https://playground.4geeks.com/contact/agendas/irene_batlle/", {
-                    method: "POST",
-
-                })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        console.log(data);
-
-                    })
-                    .catch((error) => console.log(error));
+			createUser: () => {
+				fetch('https://playground.4geeks.com/contact/agendas/irene_batlle', {
+					method: "POST",
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({ agenda_name: "irene_batlle" })
+				})
+				.then((response) => response.json())
+				.then((data) => {
+					console.log("Usuario creado:", data);
+				})
+				.catch((error) => console.log(error));
 			},
-
-			getInfoContacts: () => {//recibir la información de los contactos
-				fetch("https://playground.4geeks.com/contact/agendas/irene_batlle/contacts", {
-					method: "GET"})
-					.then ((response)=>{
-					if (response.status==404){
-						getActions().createUser()
+			
+			getInfoContacts: () => {
+				fetch('https://playground.4geeks.com/contact/agendas/irene_batlle/contacts', {
+					method: "GET"
+				})
+				.then((response) => {
+					if (response.status === 404) {
+						console.log("Agenda no encontrada. Creando nueva...");
+						getActions().createUser();
+						return null;
 					}
-					if(response.ok){
-						return response.json()
+					if (response.ok) {
+						return response.json(); 
+					} else {
+						throw new Error("Error al obtener los contactos");
 					}
-					})
-                    .then((data) => {
-                        if (data) {
-                            setStore({ listContacts: data.contacts })
-                        }
-                    }) // store is an object, and I want to target the contacts state and assign it the value of data.contacts
-                    .catch((error => console.log(error)))
-            },
+				})
+				.then((data) => {
+					if (data && Array.isArray(data)) {
+						setStore({ listContacts: data });
+					}
+				})
+				.catch((error) => console.log(error));
+			},
+			
+			
 
 			addContactToList: (contact) =>{
 				const store = getStore();
 				setStore({...store, listContacts:[...store.listContacts, contact]})
 			}, 
 
-			createContact: (payload) =>{
-				fetch ("https://playground.4geeks.com/contact/agendas/irene_batlle/contacts", {
-					method: "POST", 
-					headers:{
-						'Content-Type':'application/json'
-					}, 
-					body: JSON.stringify(
-						payload
-					),
+
+
+			createContact: (contact) => {
+
+				if (!contact.name || !contact.email || !contact.phone || !contact.address) {
+					console.log("Todos los campos son necesarios.");
+					return; 
+				}
+			
+				fetch('https://playground.4geeks.com/contact/agendas/irene_batlle/contacts', {
+					method: "POST",
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						full_name: contact.name,
+						email: contact.email,
+						phone: contact.phone,
+						address: contact.address,
+					}),
 				})
-				.then((response)=>response.json())
-				.then((data)=>{
-					console.log(data);
+				.then((response) => {
+					if (response.ok) {
+						return response.json(); 
+					} else {
+						throw new Error("No se pudo crear el contacto. Código de error: " + response.status);
+					}
+				})
+				.then((data) => {
 					const actions = getActions();
-					actions.addContactToList(data);
+					actions.addContactToList(data); 
 					console.log("Contacto añadido", data);
 				})
-				.catch((error)=>console.log(error));
-			}, 
+				.catch((error) => {
+					console.log("Error al crear el contacto:", error); 
+				});
+			},
 			
-			deleteCOntact: (id)=>{
+			
+			
+			deleteContact: (id) => {
 				fetch(`https://playground.4geeks.com/contact/agendas/irene_batlle/contacts/${id}`, {
 					method: "DELETE",
 				})
-				.then((response)=>{
-					console.log(response)
-					if(response.ok){
-						const store = getStore();
-						const updatedContacts=store.listContacts.filter(contact=>contact.id!==id);
-						setStore({listContacts: updatedContacts});
-						console.log(`El contacto ${id} se ha eliminado`);
-					}else{
-						console.log(`El contacto ${id} no se ha podido eliminar`)
+				.then((response) => {
+					if (!response.ok) {
+						throw new Error(`El contacto con ID ${id} no pudo ser eliminado`);
 					}
+					const store = getStore();
+					const updatedContacts = store.listContacts.filter(contact => contact.id !== id);
+					setStore({ listContacts: updatedContacts });
+					console.log(`El contacto ${id} ha sido eliminado`);
 				})
-				.catch((error)=>console.log(error));
+				.catch((error) => console.log(error));
 			},
+			
 
-			editContact: (id, contact)=>{
-				const store = getStore()
-				fetch(`https://playground.4geeks.com/contact/agendas/irene_batlle/contacts/${id}`,{
-					method:"PUT", 
-					headers:{
-						'Content-type': 'application/json'
-					}, 
-					body: JSON.stringify(contact)
+			editContact: (id, contact) => {
+				if (!id || !contact) {
+					console.error("Faltan datos para editar el contacto");
+					return;
+				}
+			
+				fetch(`https://playground.4geeks.com/contact/agendas/irene_batlle/contacts/${id}`, {
+					method: "PUT",
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(contact),
 				})
-				.then((response)=>{
-					if (data){
-						const updatedList =store.listContacts.map(contact=>{
-							if (contact.id==id){
-								contact = data
-							}
-							return contact
-						})
-						setStore({listContacts: updatedList})
+				.then((response) => {
+					if (!response.ok) {
+						throw new Error("No se pudo editar el contacto");
+					}
+					return response.json();
+				})
+				.then((data) => {
+					if (data) {
+						const store = getStore();
+						const updatedList = store.listContacts.map(existingContact =>
+							existingContact.id === id ? data : existingContact
+						);
+						setStore({ listContacts: updatedList });
+						console.log("Contacto editado:", data);
 					}
 				})
-				.catch((error)=>console.log(error));
-			}
+				.catch((error) => console.log(error));
+			},
+			
 
 		}
 	};
