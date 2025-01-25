@@ -13,7 +13,7 @@ const AddContact = () => {
     const [phone, setPhone] = useState("");
     const [email, setEmail] = useState("");
     const [address, setAddress] = useState("");
-    const [contact, setContact] = useState({});
+  
 
     
 
@@ -34,7 +34,7 @@ const AddContact = () => {
         } else {
             actions.editContact(id, payload)
         }
-        alert("El guardaron los datos del contacto");
+        alert("Se guardaron los datos del contacto");
         navigate("/");
         setName("");
         setPhone("");

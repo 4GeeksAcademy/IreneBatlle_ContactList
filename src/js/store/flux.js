@@ -7,23 +7,21 @@ const getState = ({ getStore, getActions, setStore }) => {
 		},
 		actions: {
 			// crear usuario
-			createUser: () => {
-				fetch('https://playground.4geeks.com/contact/agendas/irene_batlle', {
-					method: "POST",
-					headers: {
-						'Content-Type': 'application/json'
-					},
-					body: JSON.stringify({ agenda_name: "irene_batlle" })
-				})
-				.then((response) => response.json())
-				.then((data) => {
-					console.log("Usuario creado:", data);
-				})
-				.catch((error) => console.log(error));
-			},
+            createUser: () => {
+                fetch("https://playground.4geeks.com/contact/agendas/irene_batlle", {
+                    method: "POST",
+
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        console.log(data);
+
+                    })
+                    .catch((error) => console.log(error));
+            },
 			
 			getInfoContacts: () => {
-				fetch('https://playground.4geeks.com/contact/agendas/irene_batlle/contacts', {
+				fetch("https://playground.4geeks.com/contact/agendas/irene_batlle/contacts", {
 					method: "GET"
 				})
 				.then((response) => {
@@ -55,41 +53,39 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 
 
-			createContact: (contact) => {
-
-				if (!contact.name || !contact.email || !contact.phone || !contact.address) {
+			createContact: (payload) => {
+				if (!payload.name || !payload.email || !payload.phone || !payload.address) {
 					console.log("Todos los campos son necesarios.");
-					return; 
+					return;
 				}
 			
-				fetch('https://playground.4geeks.com/contact/agendas/irene_batlle/contacts', {
+				fetch("https://playground.4geeks.com/contact/agendas/irene_batlle/contacts", {
 					method: "POST",
 					headers: {
 						'Content-Type': 'application/json',
 					},
-					body: JSON.stringify({
-						full_name: contact.name,
-						email: contact.email,
-						phone: contact.phone,
-						address: contact.address,
-					}),
+					body: JSON.stringify(payload),
 				})
 				.then((response) => {
+					if (response.status === 404) {
+						throw new Error("Endpoint no encontrado. Por favor, verifica la URL o consulta la documentación de la API.");
+					}
 					if (response.ok) {
-						return response.json(); 
+						return response.json();
 					} else {
 						throw new Error("No se pudo crear el contacto. Código de error: " + response.status);
 					}
 				})
 				.then((data) => {
 					const actions = getActions();
-					actions.addContactToList(data); 
+					actions.addContactToList(data);
 					console.log("Contacto añadido", data);
 				})
 				.catch((error) => {
-					console.log("Error al crear el contacto:", error); 
+					console.log("Error al crear el contacto:", error);
 				});
 			},
+			
 			
 			
 			
