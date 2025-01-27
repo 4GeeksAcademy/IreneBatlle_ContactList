@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import { Link } from 'react-router-dom'
 import { Context } from "../store/appContext.js";
-import CardContact from "../component/CardContact.js";
+import {CardContact} from "../component/CardContact.js";
 import "../../styles/index.css"; 
 
 const Contacts = () => {
