@@ -78,7 +78,7 @@ const AddContact = () => {
                         <input type="text" className="form-control" id="formGroupExampleInput4" placeholder="Introducir dirección" onChange={(e) => setAddress(e.target.value)} value={address} required />
                     </div>
                     <div className="mb-3">
-                        <button className="btn btn-light custom-border mt-3">Añadir contacto</button>
+                        <button className="btn btn-light custom-border mt-3">Guardar</button>
                         <Link to="/">
                             <button type="button" className="btn btn-secondary custom-border mt-3 custom-font">Cancelar</button>
                         </Link>

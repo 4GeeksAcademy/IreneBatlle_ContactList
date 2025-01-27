@@ -102,37 +102,38 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 
 
-			editContact: (id, contact) => {
-				if (!id || !contact) {
+			editContact: (contact) => {
+				if (!contact || !contact.id) {
 					console.error("Faltan datos para editar el contacto");
 					return;
 				}
-
-				fetch(`https://playground.4geeks.com/contact/agendas/irene_batlle/contacts/${id}`, {
+			
+				fetch(`https://playground.4geeks.com/contact/agendas/irene_batlle/contacts/${contact.id}`, {
 					method: "PUT",
 					headers: {
 						'Content-Type': 'application/json'
 					},
 					body: JSON.stringify(contact),
 				})
-					.then((response) => {
-						if (!response.ok) {
-							throw new Error("No se pudo editar el contacto");
-						}
-						return response.json();
-					})
-					.then((data) => {
-						if (data) {
-							const store = getStore();
-							const updatedList = store.listContacts.map(existingContact =>
-								existingContact.id === id ? data : existingContact
-							);
-							setStore({ listContacts: updatedList });
-							console.log("Contacto editado:", data);
-						}
-					})
-					.catch((error) => console.log(error));
+				.then((response) => {
+					if (!response.ok) {
+						throw new Error("No se pudo editar el contacto");
+					}
+					return response.json();
+				})
+				.then((data) => {
+					if (data) {
+						const store = getStore();
+						const updatedList = store.listContacts.map(existingContact =>
+							existingContact.id === contact.id ? data : existingContact
+						);
+						setStore({ listContacts: updatedList });
+						console.log("Contacto editado:", data);
+					}
+				})
+				.catch((error) => console.log(error));
 			},
+			
 
 
 		}
